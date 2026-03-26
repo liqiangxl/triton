@@ -18,8 +18,13 @@ if(TRITON_BUILD_PYTHON_MODULE)
     message(FATAL_ERROR "clang++ is required to build gsan.ll")
   endif()
 
-  set(GSAN_RUNTIME_PLATFORM_FLAGS
-      "--cuda-path=${CMAKE_CURRENT_SOURCE_DIR}/backend")
+  if(DEFINED ENV{CUDA_HOME} AND NOT "$ENV{CUDA_HOME}" STREQUAL "" AND EXISTS "$ENV{CUDA_HOME}")
+    set(GSAN_RUNTIME_PLATFORM_FLAGS
+        "--cuda-path=$ENV{CUDA_HOME}")
+  else()
+    set(GSAN_RUNTIME_PLATFORM_FLAGS
+        "--cuda-path=${CMAKE_CURRENT_SOURCE_DIR}/backend")
+  endif()
   if(APPLE)
     list(APPEND GSAN_RUNTIME_PLATFORM_FLAGS -isysroot "${CMAKE_OSX_SYSROOT}")
   endif()
